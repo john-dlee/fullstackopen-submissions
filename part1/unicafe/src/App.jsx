@@ -54,7 +54,7 @@ const App = () => {
         avg={avg}
         positive={positive}
       />
-    </div>
+    </div>  
   )
 }
 
