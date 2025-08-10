@@ -1,10 +1,8 @@
 const Header = (props) => <h1>{props.name}</h1>
 
-const Content = (props) => (
+const Content = ({ parts }) => (
   <div>
-    <Part part={props.parts[0]} />
-    <Part part={props.parts[1]} />
-    <Part part={props.parts[2]} />
+    {parts.map((part) => <Part key={part.name} part={part} />)}
   </div>
 )
 
@@ -20,16 +18,8 @@ const Course = ({ course }) => (
   <div>
     <Header name={course.name} />
     <Content parts={course.parts} />
-    <Total
-      total={
-        course.parts[0].exercises +
-        course.parts[1].exercises +
-        course.parts[2].exercises
-      }
-    />
   </div>
 )
-
 
 const App = () => {
   const course = {
