@@ -42,8 +42,9 @@ const App = () => {
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'persons')
   
+  console.log('render', persons.length, 'persons')
+
   const visiblePersons = persons.filter(person => 
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
@@ -69,7 +70,15 @@ const App = () => {
     if (exists) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat({name : newName, number: newNumber}))
+      
+      const newPerson = {name : newName, number: newNumber}
+      axios
+        .post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          console.log(response.data)
+          setPersons(persons.concat(response.data))
+        })
+      console.log('add button clicked', event.target)
     }
   }
 
