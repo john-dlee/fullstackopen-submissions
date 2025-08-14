@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import personService from './services/person'
 import axios from 'axios'
 
 const Filter = ({ handler }) => {
@@ -42,7 +43,7 @@ const App = () => {
         setPersons(response.data)
       })
   }, [])
-  
+
   console.log('render', persons.length, 'persons')
 
   const visiblePersons = persons.filter(person => 
