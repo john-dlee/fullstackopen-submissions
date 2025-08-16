@@ -26,7 +26,7 @@ const Form = ({ onSubmit, onNameChange, onNumberChange }) => {
   )
 }
 
-const Display = ({ visiblePersons }) => <ul>{visiblePersons.map(person => <li key={person.name}>{person.name} {person.number}</li>)}</ul>
+const Display = ({ visiblePersons }) => <ul>{visiblePersons.map(person => <li key={person.name}>{person.name} {person.number} <button>delete</button></li>)}</ul>
 
 const App = () => {
   const [persons, setPersons] = useState([])
