@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-import axios from 'axios'
 
 const Filter = ({ handler }) => {
   return (
@@ -26,7 +25,17 @@ const Form = ({ onSubmit, onNameChange, onNumberChange }) => {
   )
 }
 
-const Display = ({ visiblePersons }) => <ul>{visiblePersons.map(person => <li key={person.name}>{person.name} {person.number} <button>delete</button></li>)}</ul>
+const Display = ({ visiblePersons, onDelete }) => {
+  return (
+    <ul>
+      {visiblePersons.map(person => 
+        <li key={person.name}>
+          {person.name} {person.number} 
+          <button onClick={() => onDelete(person.id)}>delete</button>
+        </li>)}
+    </ul>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -64,6 +73,15 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  const handleDelete = (id) => {
+    const person = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${person.name}`)) {
+      personService.deleteId(id)
+      .then(() => setPersons(persons.filter(p => p.id !== id)))
+      .catch(error => console.log(error))
+    }
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     const exists = persons.some(person => person.name === newName)
@@ -88,7 +106,7 @@ const App = () => {
       <Form onSubmit={addPerson} onNameChange={handleNewName} onNumberChange={handleNewNumber}/>
       <h3>Numbers</h3>
       <div>debug: {newName} {newNumber}</div>
-      <Display visiblePersons={visiblePersons}/>
+      <Display visiblePersons={visiblePersons} onDelete={handleDelete}/>
     </div>
   )
 }
