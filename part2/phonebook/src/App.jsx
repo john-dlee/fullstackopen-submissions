@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 
-const Notification = ({ message }) => {
-  const notificationStyle = {
-    color: 'green',
+const Notification = ({ notification }) => {
+  if (notification === null) return null
+
+  const baseNotiStyle = {
     background: 'lightgrey',
     borderStyle: 'solid',
     padding: '10px',
@@ -11,12 +12,15 @@ const Notification = ({ message }) => {
     fontSize: '20px',
     marginBottom: '10px'
   }
-  
-  if (message === null) return null
+
+  const notiStyle = {
+    ...baseNotiStyle,
+    color: notification.isError ? 'red' : 'green'
+  }
   
   return (
-    <div style={notificationStyle}>
-      {message}
+    <div style={notiStyle}>
+      {notification.message}
     </div>
   )
 }
@@ -62,7 +66,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [notificationMessage, setNotiMessage] = useState('')
+  const [notificationMessage, setNotiMessage] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -113,9 +117,16 @@ const App = () => {
           .update(existingPerson.id, updatedPerson)
           .then(personData => {
             setPersons(persons.map(p => p.id !== personData.id ? p : updatedPerson))
+            setNotiMessage({ message: `Updated ${personData.name}`, isError: false})
+            setTimeout(() => {
+              setNotiMessage(null)
+            }, 3000)
           })
           .catch(error => {
-            alert(`Error when updating person`)
+            setNotiMessage({ message: `Information of ${newName} has already been removed from server`, isError: true})
+            setTimeout(() => {
+              setNotiMessage(null)
+            }, 3000)
           } )
       }
     } else {
@@ -124,7 +135,7 @@ const App = () => {
         .create(newPerson)
         .then(personData => {
           setPersons(persons.concat(personData))
-          setNotiMessage(`Added ${personData.name}`)
+          setNotiMessage({ message: `Added ${personData.name}`, isError: false})
           setTimeout(() => {
             setNotiMessage(null)
           }, 3000)
@@ -135,7 +146,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification notification={notificationMessage} />
       <Filter handler={handleFilterName}/>
       <h3>add a new</h3>
       <Form onSubmit={addPerson} onNameChange={handleNewName} onNumberChange={handleNewNumber}/>
