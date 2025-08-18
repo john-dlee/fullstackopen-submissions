@@ -84,12 +84,21 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const exists = persons.some(person => person.name === newName)
-    if (exists) {
-      alert(`${newName} is already added to phonebook`)
+    const existingPerson = persons.find(person => person.name === newName)
+    if (existingPerson) {
+      if (window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+        const updatedPerson = {...existingPerson, number: newNumber}
+        personService
+          .update(existingPerson.id, updatedPerson)
+          .then(personData => {
+            setPersons(persons.map(p => p.id !== personData.id ? p : updatedPerson))
+          })
+          .catch(error => {
+            alert(`Error when updating person`)
+          } )
+      }
     } else {
       const newPerson = {name : newName, number: newNumber}
-
       personService
         .create(newPerson)
         .then(personData => {
@@ -105,7 +114,6 @@ const App = () => {
       <h3>add a new</h3>
       <Form onSubmit={addPerson} onNameChange={handleNewName} onNumberChange={handleNewNumber}/>
       <h3>Numbers</h3>
-      <div>debug: {newName} {newNumber}</div>
       <Display visiblePersons={visiblePersons} onDelete={handleDelete}/>
     </div>
   )
