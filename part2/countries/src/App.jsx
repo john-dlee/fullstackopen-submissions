@@ -1,7 +1,27 @@
 import { useState, useEffect } from "react"
 import axios from 'axios'
 
-const Display = ({ countries }) => {
+const CountryDetails = ({ country }) => {
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <div>Capital {country.capital[0]}</div>
+      <div>Area {country.area}</div>
+      <h2>Languages</h2>
+      <ul>
+        {Object.values(country.languages).map(language => 
+          <li key={language}>
+            {language}
+          </li>)}
+      </ul>
+      <img 
+        src={country.flags.png}
+      />
+    </div>
+  )
+}
+
+const Display = ({ countries, onSelect }) => {
   if (countries.length > 10) {
     return <p> Too many matches, specify another filter</p>
   } 
@@ -9,28 +29,16 @@ const Display = ({ countries }) => {
   if (countries.length === 1) {
     const country = countries[0]
     return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <div>Capital {country.capital[0]}</div>
-        <div>Area {country.area}</div>
-        <h2>Languages</h2>
-        <ul>
-          {Object.values(country.languages).map(language => 
-            <li key={language}>
-              {language}
-            </li>)}
-        </ul>
-        <img 
-          src={country.flags.png}
-        />
-      </div>
+      <CountryDetails country={country} />
     )
   }
-
+  
   return (
     <ul>
       {countries.map(country => 
-        <li key={country.cca3}>{country.name.common}</li>)}
+        <li key={country.cca3}>
+          {country.name.common} <button onClick={() => {onSelect(country)}}>Show</button>
+        </li>)}
     </ul>
   )
 }
@@ -38,6 +46,7 @@ const Display = ({ countries }) => {
 const App = ()  => {
   const [input, setInput] = useState(null)
   const [countries, setCountries] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     axios
@@ -48,6 +57,7 @@ const App = ()  => {
   const handleInput = (e) => {
     console.log(e.target.value)
     setInput(e.target.value)
+    setSelectedCountry(null)
   }
   
   const filteredCountries = countries.filter(country => 
@@ -57,7 +67,16 @@ const App = ()  => {
   return (
     <div>
       find countries <input onChange={handleInput}/>
-      <Display countries={filteredCountries}/>
+      <div>
+        {selectedCountry ? <CountryDetails country={selectedCountry} /> : 
+          (
+            <Display 
+              countries={filteredCountries} 
+              onSelect={setSelectedCountry} 
+            />
+        )}
+      </div>
+      
     </div>
   )
 }
