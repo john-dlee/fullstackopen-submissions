@@ -17,6 +17,7 @@ const CountryDetails = ({ country }) => {
       <img 
         src={country.flags.png}
       />
+      <h2>Weather in {country.name.common}</h2>
     </div>
   )
 }
