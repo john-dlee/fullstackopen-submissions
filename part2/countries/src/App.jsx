@@ -2,6 +2,17 @@ import { useState, useEffect } from "react"
 import axios from 'axios'
 
 const CountryDetails = ({ country }) => {
+  const [weather, setWeather] = useState(null)
+  const api_key = import.meta.env.VITE_WEATHER_KEY
+
+  useEffect(() => {
+    axios
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${api_key}`)
+      .then(response => {
+        setWeather(response.data)
+      }, [])
+  })
+
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -48,12 +59,14 @@ const App = ()  => {
   const [input, setInput] = useState(null)
   const [countries, setCountries] = useState([])
   const [selectedCountry, setSelectedCountry] = useState(null)
-
+  
   useEffect(() => {
     axios
     .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
     .then(response => setCountries(response.data))
   }, [])
+
+  
 
   const handleInput = (e) => {
     console.log(e.target.value)
