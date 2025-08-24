@@ -6,12 +6,13 @@ const CountryDetails = ({ country }) => {
   const api_key = import.meta.env.VITE_WEATHER_KEY
 
   useEffect(() => {
+    if (!country) return
     axios
-      .get(`http://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${api_key}`)
-      .then(response => {
-        setWeather(response.data)
-      }, [])
-  })
+      .get(`http://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${api_key}&units=metric`)
+      .then(response => setWeather(response.data))
+  }, [country])
+
+  const iconURL = weather ? `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png` : ""
 
   return (
     <div>
@@ -28,7 +29,16 @@ const CountryDetails = ({ country }) => {
       <img 
         src={country.flags.png}
       />
-      <h2>Weather in {country.name.common}</h2>
+      {weather ? (
+        <>
+          <h2>Weather in {country.capital[0]}</h2>
+          <div>Temperature {weather.main.temp} Celsius</div>
+          <img src={iconURL} alt={weather.weather[0].description} />
+          <div>Wind {weather.wind.speed} m/s</div>
+        </>
+      ) : (
+        <div>Loading weather...</div>
+      )}
     </div>
   )
 }
