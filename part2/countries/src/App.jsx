@@ -80,8 +80,6 @@ const App = ()  => {
       .catch(err => console.error('Error fetching countries', err))
   }, [])
 
-  
-
   const handleInput = (e) => {
     console.log(e.target.value)
     setInput(e.target.value)
