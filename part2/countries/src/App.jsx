@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react"
-import axios from 'axios'
+import { useState, useEffect } from 'react'
+import weatherService from './services/weather'
+import countryService from './services/countries'
 
 const CountryDetails = ({ country }) => {
   const [weather, setWeather] = useState(null)
-  const api_key = import.meta.env.VITE_WEATHER_KEY
 
   useEffect(() => {
     if (!country) return
-    axios
-      .get(`http://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${api_key}&units=metric`)
-      .then(response => setWeather(response.data))
-  }, [country])
 
-  const iconURL = weather ? `https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png` : ""
+    weatherService
+      .getWeather(country.capital[0])
+      .then(data => setWeather(data))
+      .catch(err => console.error('Error fetching weather', err))
+  }, [country])
 
   return (
     <div>
@@ -33,7 +33,10 @@ const CountryDetails = ({ country }) => {
         <>
           <h2>Weather in {country.capital[0]}</h2>
           <div>Temperature {weather.main.temp} Celsius</div>
-          <img src={iconURL} alt={weather.weather[0].description} />
+          <img 
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
+            alt={weather.weather[0].description} 
+          />
           <div>Wind {weather.wind.speed} m/s</div>
         </>
       ) : (
@@ -71,9 +74,10 @@ const App = ()  => {
   const [selectedCountry, setSelectedCountry] = useState(null)
   
   useEffect(() => {
-    axios
-    .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-    .then(response => setCountries(response.data))
+    countryService
+      .getAll()
+      .then(data => setCountries(data))
+      .catch(err => console.error('Error fetching countries', err))
   }, [])
 
   
