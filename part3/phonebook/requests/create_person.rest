@@ -14,3 +14,19 @@ Content-Type: application/json
   "name": "John",
   "number": "234-45645-123123"
 }
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "number": "234-45645-123123"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "John"
+}
