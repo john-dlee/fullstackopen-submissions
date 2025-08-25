@@ -67,6 +67,13 @@ app.post('/api/persons', (request, response) => {
       error: 'name or number missing'
     })
   }
+  const found = notes.find(person => person.name === body.name)
+
+  if (found) {
+    return response.status(400).json({
+      error: 'name already exists'
+    })
+  }
 
   const person = {
     id: generateId(),
