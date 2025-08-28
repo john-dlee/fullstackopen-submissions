@@ -1,65 +1,10 @@
 import { useState, useEffect } from 'react'
+
 import personService from './services/persons'
-
-const Notification = ({ notification }) => {
-  if (notification === null) return null
-
-  const baseNotiStyle = {
-    background: 'lightgrey',
-    borderStyle: 'solid',
-    padding: '10px',
-    borderRadius: '5px',
-    fontSize: '20px',
-    marginBottom: '10px'
-  }
-
-  const notiStyle = {
-    ...baseNotiStyle,
-    color: notification.isError ? 'red' : 'green'
-  }
-  
-  return (
-    <div style={notiStyle}>
-      {notification.message}
-    </div>
-  )
-}
-
-const Filter = ({ handler }) => {
-  return (
-    <div>
-      filter shown with <input onChange={handler}/>
-    </div>
-  )
-}
-
-const Form = ({ onSubmit, onNameChange, onNumberChange }) => {
-  return (
-    <form onSubmit={onSubmit}>
-      <div>
-        name: <input onChange={onNameChange}/>
-      </div>
-      <div>
-        number: <input onChange={onNumberChange}/>
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  )
-}
-
-const Display = ({ visiblePersons, onDelete }) => {
-  return (
-    <ul>
-      {visiblePersons.map(person => 
-        <li key={person.name}>
-          {person.name} {person.number} 
-          <button onClick={() => onDelete(person.id)}>delete</button>
-        </li>)}
-    </ul>
-  )
-}
+import Notification from './components/Notification'
+import Filter from './components/Filter'
+import Form from './components/Form'
+import Display from './components/Display'
 
 const App = () => {
   const [persons, setPersons] = useState([])
